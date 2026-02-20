@@ -285,13 +285,20 @@ input[type=range] {
 }
 
 @media (max-width: 768px) {
-  .main-container {
-    margin-top: 80px;
+  .navbar-glass {
+    height: 70px;
     padding: 0 1rem;
   }
 
+  .main-container {
+    padding-top: 90px;
+    /* Space for 70px nav + 20px breathing room */
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .glass-card {
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.25rem;
     border-radius: 20px;
   }
 
@@ -308,10 +315,6 @@ input[type=range] {
     display: none !important;
   }
 
-  .navbar-glass {
-    padding: 0.75rem 1rem;
-  }
-
   .btn-primary {
     width: 100%;
     padding: 1rem;
@@ -319,13 +322,23 @@ input[type=range] {
 
   .features-grid {
     margin-top: 3rem;
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 10vw, 2.5rem) !important;
+    line-height: 1.2;
+    margin-top: 0.5rem;
   }
 }
 
 @media (max-width: 480px) {
+  .main-container {
+    padding-top: 85px;
+  }
+
   h1 {
-    font-size: 9vw;
+    font-size: 1.75rem !important;
   }
 
   .glass-card {
