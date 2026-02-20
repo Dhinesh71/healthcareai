@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pickle
 import numpy as np
-import pandas as pd
 from pydantic import BaseModel
 import os
 
@@ -47,18 +46,16 @@ def predict_diabetes(data: PatientData):
     if model is None:
         raise HTTPException(status_code=500, detail="Model not loaded. Please train the model first.")
     
-    # Prepare input data
-    # Create DataFrame with correct column names matching training data
+    # Prepare input data using numpy instead of pandas to save bundle size
     features = [
         "Pregnancies", "Glucose", "BloodPressure", "SkinThickness", 
         "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"
     ]
     
-    input_data = pd.DataFrame([[
+    input_data = np.array([[
         data.Pregnancies, data.Glucose, data.BloodPressure, data.SkinThickness,
         data.Insulin, data.BMI, data.DiabetesPedigreeFunction, data.Age
-    ]], columns=features)
-    
+    ]])
     
     # Predict
     prediction = model.predict(input_data)[0]
@@ -85,7 +82,6 @@ def predict_diabetes(data: PatientData):
         "risk_level": risk_level,
         "feature_importance": importance
     }
-
 
 if __name__ == "__main__":
     import uvicorn
