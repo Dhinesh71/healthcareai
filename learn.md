@@ -7,53 +7,62 @@ DiaPredict is an **AI (Artificial Intelligence)** system. Its job is to look at 
 
 ---
 
-## 2. How the "Brain" Works (The AI Model)
-The "brain" of this project is a Machine Learning model called **Random Forest**.
+## 2. The Data (The Learning Material 📚)
+Before the AI can guess, it must study. We use a famous dataset called the **Pima Indians Diabetes Dataset**.
 
-*   **Learning**: Imagine the computer looking at thousands of past medical records. It learns that "High Blood Sugar + High BMI usually = Diabetes."
-*   **Predicting**: When you give it your data, it compares your data to what it learned and gives a "Risk Score."
+*   **What's inside?**: It contains medical records of women. It tracks 8 things:
+    1.  **Pregnancies**: Number of times pregnant.
+    2.  **Glucose**: Blood sugar level.
+    3.  **Blood Pressure**: Heart health measure.
+    4.  **Skin Thickness**: Body fat measure.
+    5.  **Insulin**: Hormone level.
+    6.  **BMI**: Weight to height ratio.
+    7.  **Pedigree Function**: Family history of diabetes.
+    8.  **Age**: How old the person is.
+*   **Cleaning the Data**: Sometimes data is missing (shown as 0). The computer fixes this by filling in the "middle" (median) value so the AI doesn't get confused.
 
 ---
 
-## 3. The Two Parts of the Application
-The project is split into two parts because AI is "heavy" and needs a strong server.
+## 3. The "Brain" (The AI Model 🧠)
+The computer studies two types of "brains" and picks the smartest one:
+1.  **Logistic Regression**: Simple math logic.
+2.  **Random Forest**: A complex "forest" of many decision trees.
+
+*   **Accuracy**: The system usually gets the answer right about **75% to 80%** of the time. In this project, **Random Forest** is usually the winner because it is better at finding hidden patterns.
+
+---
+
+## 4. How it Predicts (Step-by-Step 🚶‍♂️)
+When you click "Predict," the computer follows these steps:
+1.  **Input**: It takes your 8 health numbers.
+2.  **Comparison**: It compares your numbers to the thousands of records it studied before.
+3.  **Vote**: In a "Random Forest," many different "trees" vote on whether you are at risk.
+4.  **Probability**: It doesn't just say "Yes" or "No." It gives a percentage (like 85% likely).
+5.  **Result**: 
+    *   If the percentage is **above 50%**, it says **"High Risk."**
+    *   If it is **below 50%**, it says **"Low Risk."**
+
+---
+
+## 5. The Two Parts of the Application
+The project is split into two parts because AI is "heavy."
 
 ### A. The Frontend (The Face 🎨)
-*   **What it is**: The website you see in your browser.
-*   **Built with**: React (a popular tool for making websites).
-*   **Job**: To show you the form, let you move sliders, and show you the results with pretty charts.
-*   **Hosted on**: **Vercel** (good for fast websites).
+*   **Hosted on**: **Vercel**.
+*   **Job**: To show you the form and the results with pretty charts.
 
 ### B. The Backend (The Engine ⚙️)
-*   *What it is*: A hidden computer program that holds the AI model.
-*   **Built with**: FastAPI (Python).
-*   **Job**: It waits for data from the website, runs it through the AI model, and sends back the result.
-*   **Hosted on**: **Render** (good for heavy AI calculation).
-
----
-
-## 4. How the Data Travels (The Conversation 💬)
-1.  **You** move a slider on the website.
-2.  The **Frontend** packages that data into a small digital envelope (JSON).
-3.  The **Frontend** sends that envelope over the internet to the **Backend** on Render.
-4.  The **Backend** opens the envelope, asks the AI model for a prediction.
-5.  The **Backend** sends the answer back to the **Frontend**.
-6.  The **Frontend** shows you: "High Risk" or "Low Risk."
-
----
-
-## 5. Why do we need "Environment Variables"?
-Imagine the Frontend needs to call the Backend on a phone. The **Environment Variable** (`VITE_API_URL`) is the **phone number** of the backend. Without this, the website doesn't know where to send your health data.
+*   **Hosted on**: **Render**.
+*   **Job**: It holds the AI model and does the heavy math.
 
 ---
 
 ## 6. Key Words to Remember
-*   **Random Forest**: The type of AI that uses many "decision trees" to find the answer.
-*   **FastAPI**: A very fast tool to make the back of the website talk to the front.
-*   **Vite**: A tool that makes the website load super fast while building it.
-*   **Deployment**: The act of putting your code on the internet so everyone can see it.
+*   **Features**: The 8 health numbers we put in.
+*   **Inference**: The act of the AI making a prediction on new data.
+*   **Deployment**: Putting the code on the internet.
 
 ---
 
 ## 7. Safety First! 🏥
-This is a **prediction system**, not a real doctor. It uses math and patterns to guess, but it should only be used for learning and inspiration!
+This is a **prediction system**, not a real doctor. It uses patterns to guess, but it should only be used for learning and inspiration!
