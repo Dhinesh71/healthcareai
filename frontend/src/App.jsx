@@ -31,55 +31,44 @@ function App() {
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 120 }}
         className="navbar-glass"
-        style={{
-          padding: '1rem 2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          height: '70px'
-        }}
       >
-        <div
-          style={{
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem'
-          }}
-          onClick={() => setCurrentPage('landing')}
-        >
-          <div style={{
-            background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
-            padding: '0.5rem',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Activity size={24} color="#7c3aed" />
+        <div className="nav-content">
+          <div
+            style={{
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem'
+            }}
+            onClick={() => setCurrentPage('landing')}
+          >
+            <div style={{
+              background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
+              padding: '0.5rem',
+              borderRadius: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Activity size={24} color="#7c3aed" />
+            </div>
+            <span style={{
+              fontWeight: 800,
+              fontSize: '1.5rem',
+              background: 'linear-gradient(45deg, #8b5cf6, #d946ef)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              DiaPredict
+            </span>
           </div>
-          <span style={{
-            fontWeight: 800,
-            fontSize: '1.5rem',
-            background: 'linear-gradient(45deg, #8b5cf6, #d946ef)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}>
-            DiaPredict
-          </span>
-        </div>
 
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <span className="desktop-only" style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>
-            AI-Powered MedTech
-          </span>
-
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <span className="desktop-only" style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>
+              AI-Powered MedTech
+            </span>
+          </div>
         </div>
       </motion.nav>
 
