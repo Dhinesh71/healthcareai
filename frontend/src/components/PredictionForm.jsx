@@ -78,7 +78,10 @@ const PredictionForm = ({ onPredict }) => {
         setLoading(true);
         setError(null);
         try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            let API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            // Remove trailing slash if present
+            API_URL = API_URL.replace(/\/$/, '');
+
             const response = await fetch(`${API_URL}/predict`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
