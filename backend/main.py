@@ -2,15 +2,16 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pickle
 import numpy as np
+import pandas as pd
 from pydantic import BaseModel
 import os
 
-app = FastAPI(title="DiaPredict API", description="Diabetes Risk Prediction API")
+app = FastAPI(title="DiaPredict AI - Diabetes Prediction System")
 
-# Enable CORS for frontend
+# Enable CORS for frontend (Vercel)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], # In production, replace with your Vercel URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,29 +40,33 @@ class PatientData(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to DiaPredict API"}
+    return {
+        "status": "online",
+        "message": "DiaPredict AI Backend is running. Send POST to /predict"
+    }
 
 @app.post("/predict")
 def predict_diabetes(data: PatientData):
     if model is None:
-        raise HTTPException(status_code=500, detail="Model not loaded. Please train the model first.")
+        raise HTTPException(status_code=500, detail="Model file missing from server.")
     
-    # Prepare input data using numpy instead of pandas to save bundle size
+    # Feature columns matching training data
     features = [
         "Pregnancies", "Glucose", "BloodPressure", "SkinThickness", 
         "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"
     ]
     
-    input_data = np.array([[
+    # Prepare input data as DataFrame (Render handles larger bundles, so we can use Pandas)
+    input_df = pd.DataFrame([[
         data.Pregnancies, data.Glucose, data.BloodPressure, data.SkinThickness,
         data.Insulin, data.BMI, data.DiabetesPedigreeFunction, data.Age
-    ]])
+    ]], columns=features)
     
     # Predict
-    prediction = model.predict(input_data)[0]
-    probability = model.predict_proba(input_data)[0][1]
+    prediction = model.predict(input_df)[0]
+    probability = model.predict_proba(input_df)[0][1]
     
-    # Feature Importance
+    # Feature Importance Logic
     importance = {}
     if hasattr(model, "feature_importances_"):
         importance = dict(zip(features, model.feature_importances_.tolist()))
@@ -69,12 +74,7 @@ def predict_diabetes(data: PatientData):
         importance = dict(zip(features, model.coef_[0].tolist()))
     
     # Risk Level
-    if probability < 0.3:
-        risk_level = "Low"
-    elif probability < 0.7:
-        risk_level = "Medium"
-    else:
-        risk_level = "High"
+    risk_level = "High Risk" if probability >= 0.5 else "Low Risk"
     
     return {
         "prediction": int(prediction),
@@ -85,4 +85,6 @@ def predict_diabetes(data: PatientData):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Use environment variable for port (required by Render/Railway)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

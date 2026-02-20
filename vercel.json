@@ -1,14 +1,8 @@
 {
     "rewrites": [
         {
-            "source": "/api/(.*)",
-            "destination": "/api/index.py"
+            "source": "/(.*)",
+            "destination": "/frontend/$1"
         }
-    ],
-    "functions": {
-        "api/index.py": {
-            "maxDuration": 10,
-            "excludeFiles": "{backend/data/**,frontend/**,node_modules/**,backend/__pycache__/**,*.md,*.toml}"
-        }
-    }
+    ]
 }

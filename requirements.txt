@@ -1,4 +1,0 @@
-fastapi
-numpy
-scikit-learn
-python-multipart
