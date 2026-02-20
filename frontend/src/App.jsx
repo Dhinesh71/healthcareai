@@ -84,7 +84,7 @@ function App() {
       </motion.nav>
 
       {/* Main Content Area */}
-      <div style={{ marginTop: '100px', width: '100%', maxWidth: '1200px', padding: '0 1rem', position: 'relative', zIndex: 1 }}>
+      <main className="main-container">
         <AnimatePresence mode="wait">
           {currentPage === 'landing' && (
             <motion.div
@@ -93,6 +93,7 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
+              style={{ width: '100%' }}
             >
               <LandingPage onStart={handleStart} />
             </motion.div>
@@ -105,6 +106,7 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
+              style={{ width: '100%' }}
             >
               <PredictionForm onPredict={handlePredict} />
             </motion.div>
@@ -117,23 +119,31 @@ function App() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.4 }}
+              style={{ width: '100%' }}
             >
               <ResultDisplay result={result} onReset={handleReset} />
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </main>
 
       {/* Footer */}
       <footer style={{
         textAlign: 'center',
-        padding: '2rem',
+        padding: '3rem 1.5rem',
         color: '#94a3b8',
-        fontSize: '0.8rem',
-        marginTop: '4rem'
+        fontSize: '0.9rem',
+        marginTop: 'auto',
+        width: '100%',
+        boxSizing: 'border-box'
       }}>
-        &copy; {new Date().getFullYear()} DiaPredict MedTech AI. All rights reserved. <br />
-        Disclaimer: This tool is for informational purposes only and is not a substitute for professional medical advice.
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          &copy; {new Date().getFullYear()} DiaPredict MedTech AI. All rights reserved. <br />
+          <p style={{ fontSize: '0.75rem', marginTop: '1rem', opacity: 0.8 }}>
+            Disclaimer: This tool is for informational purposes only and is not a substitute for professional medical advice.
+            The AI predictions are based on statistical patterns and should be verified by a licensed healthcare professional.
+          </p>
+        </div>
       </footer>
     </>
   );

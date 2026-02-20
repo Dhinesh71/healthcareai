@@ -33,12 +33,12 @@ const ResultDisplay = ({ result, onReset }) => {
     const { prediction, probability, risk_level, feature_importance } = result;
     const probPercentage = probability * 100;
 
-    // Determine theme based on risk
-    const isHighRisk = risk_level === "High";
-    const isMediumRisk = risk_level === "Medium";
+    // Determine theme based on risk (Matching backend strings "High Risk" / "Low Risk")
+    const isHighRisk = risk_level === "High Risk";
 
-    const themeColor = isHighRisk ? "#ef4444" : isMediumRisk ? "#f59e0b" : "#10b981";
-    const Icon = isHighRisk ? AlertTriangle : isMediumRisk ? Info : CheckCircle;
+    // We can also use probability for more granular color
+    const themeColor = probPercentage > 70 ? "#e11d48" : probPercentage > 30 ? "#f59e0b" : "#10b981";
+    const Icon = probPercentage > 70 ? AlertTriangle : probPercentage > 30 ? Info : CheckCircle;
 
     // Sort features
     const sortedFeatures = feature_importance
@@ -47,10 +47,10 @@ const ResultDisplay = ({ result, onReset }) => {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             className="glass-card"
-            style={{ maxWidth: '850px', margin: '2rem auto', padding: '3rem 2rem', textAlign: 'center' }}
+            style={{ width: '100%', maxWidth: '850px' }}
         >
             <motion.div
                 initial={{ scale: 0 }}
@@ -58,85 +58,91 @@ const ResultDisplay = ({ result, onReset }) => {
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
                 style={{
                     display: 'inline-flex',
-                    padding: '1rem',
-                    borderRadius: '50%',
-                    background: `${themeColor}20`,
+                    padding: '1.25rem',
+                    borderRadius: '20px',
+                    background: `${themeColor}15`,
                     color: themeColor,
-                    marginBottom: '1rem'
+                    marginBottom: '1.5rem'
                 }}
             >
-                <Icon size={48} />
+                <Icon size={40} />
             </motion.div>
 
-            <h2 style={{ color: '#1e293b', marginBottom: '0.5rem' }}>Assessment Complete</h2>
-            <p style={{ color: '#64748b', marginBottom: '2rem' }}>
-                Based on the provided vitals, the analysis is complete.
+            <h2 style={{ marginBottom: '0.5rem' }}>Analysis Results</h2>
+            <p style={{ color: '#64748b', marginBottom: '3rem' }}>
+                AI Model cross-referenced your health parameters with thousands of clinical records.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '3rem' }}>
+            <div className="results-container">
                 <div style={{ position: 'relative', width: '220px', height: '220px' }}>
                     <CircularProgress value={probPercentage} color={themeColor} />
                 </div>
 
-                <h3 style={{ fontSize: '2rem', margin: '1rem 0', color: themeColor }}>
-                    {risk_level} Risk Level
-                </h3>
+                <div style={{ textAlign: 'center' }}>
+                    <h3 style={{ fontSize: '2.2rem', margin: '0 0 1rem', color: themeColor, fontWeight: 800 }}>
+                        {risk_level}
+                    </h3>
 
-                <p style={{ maxWidth: '500px', margin: '0 auto', color: '#475569' }}>
-                    {prediction === 1
-                        ? "The model suggests a high probability of diabetes. It is recommended to consult a healthcare professional for further diagnosis."
-                        : "The model suggests a low probability of diabetes. Maintain a healthy lifestyle to keep your risk low."}
-                </p>
+                    <div style={{
+                        background: 'white',
+                        padding: '1.5rem',
+                        borderRadius: '20px',
+                        border: '1px solid #e2e8f0',
+                        maxWidth: '500px'
+                    }}>
+                        <p style={{ margin: 0, color: '#334155', fontWeight: 500, fontSize: '1rem', lineHeight: 1.6 }}>
+                            {prediction === 1
+                                ? "The AI engine has identified patterns strongly associated with diabetes risk. We strongly recommend scheduling a diagnostic test with a healthcare professional."
+                                : "The analysis suggests your physiological parameters fall within the low-risk category. Continue maintaining a balanced diet and regular exercise."}
+                        </p>
+                    </div>
+                </div>
             </div>
 
             {sortedFeatures.length > 0 && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    style={{ textAlign: 'left', marginTop: '3rem', background: 'rgba(255,255,255,0.5)', padding: '2rem', borderRadius: '16px' }}
-                >
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem', gap: '0.5rem' }}>
-                        <Activity size={20} color="#64748b" />
-                        <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#334155' }}>Key Contributing Factors</h3>
+                <div className="importance-grid" style={{ marginTop: '5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2rem', gap: '0.75rem' }}>
+                        <div className="icon-box" style={{ background: '#f8fafc', padding: '0.5rem' }}>
+                            <Activity size={20} color="#64748b" />
+                        </div>
+                        <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b', fontWeight: 700 }}>AI Decision Factors</h4>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {sortedFeatures.map(([name, value], index, array) => {
-                            const maxVal = array[0][1];
-                            const widthPercent = (value / maxVal) * 100;
+                    {sortedFeatures.map(([name, value], index, array) => {
+                        const maxVal = Math.max(...array.map(f => f[1]));
+                        const widthPercent = (value / maxVal) * 100;
 
-                            return (
-                                <div key={name} className="feature-row">
-                                    <div className="feature-name">{name}</div>
-                                    <div className="feature-bar-bg">
-                                        <motion.div
-                                            className="feature-bar-fill"
-                                            style={{
-                                                background: themeColor,
-                                                opacity: 0.8
-                                            }}
-                                            initial={{ width: 0 }}
-                                            whileInView={{ width: `${widthPercent}%` }}
-                                            transition={{ duration: 1, delay: index * 0.1 }}
-                                        />
-                                    </div>
-                                    <div className="feature-value">{(value * 100).toFixed(1)}%</div>
+                        return (
+                            <div key={name} className="feature-bar-row">
+                                <div className="feature-bar-label">
+                                    <span>{name}</span>
+                                    <span style={{ fontWeight: 700, color: '#1e293b' }}>
+                                        {(value * 100).toFixed(1)}%
+                                    </span>
                                 </div>
-                            );
-                        })}
-                    </div>
-                </motion.div>
+                                <div className="feature-bar-container">
+                                    <motion.div
+                                        className="feature-bar-progress"
+                                        style={{ background: themeColor }}
+                                        initial={{ width: 0 }}
+                                        whileInView={{ width: `${widthPercent}%` }}
+                                        transition={{ duration: 1, delay: index * 0.1 }}
+                                    />
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             )}
 
             <motion.button
                 className="btn-primary"
                 onClick={onReset}
-                style={{ marginTop: '3rem', background: '#64748b' }}
-                whileHover={{ scale: 1.05, background: '#475569' }}
-                whileTap={{ scale: 0.95 }}
+                style={{ marginTop: '4rem', background: '#475569', width: '100%', maxWidth: '300px' }}
+                whileHover={{ scale: 1.02, background: '#1e293b' }}
+                whileTap={{ scale: 0.98 }}
             >
-                <RefreshCcw size={18} /> Start New Assessment
+                <RefreshCcw size={20} /> New Assessment
             </motion.button>
         </motion.div>
     );

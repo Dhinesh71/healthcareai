@@ -13,7 +13,7 @@ const LandingPage = ({ onStart }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="landing-container"
-      style={{ padding: '4rem 1rem', overflow: 'hidden' }}
+      style={{ overflow: 'hidden', width: '100%', paddingBottom: '4rem' }}
       ref={containerRef}
     >
       {/* Hero Section */}
@@ -21,18 +21,18 @@ const LandingPage = ({ onStart }) => {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        style={{ marginBottom: '4rem', position: 'relative' }}
+        style={{ marginBottom: '4rem', position: 'relative', width: '100%' }}
       >
-        <div style={{ position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)', opacity: 0.1, zIndex: -1 }}>
+        <div style={{ position: 'absolute', top: '-80px', left: '50%', transform: 'translateX(-50%)', opacity: 0.05, zIndex: -1 }}>
           <HeartPulse size={400} color="#8b5cf6" />
         </div>
 
-        <h1 style={{ fontSize: '4.5rem', marginBottom: '1.5rem', letterSpacing: '-0.05em' }}>
+        <h1>
           Predicting Health.<br />
           <span style={{ color: '#0f172a' }}>Protecting Futures.</span>
         </h1>
 
-        <p style={{ maxWidth: '600px', margin: '0 auto 2.5rem', fontSize: '1.25rem', color: '#64748b' }}>
+        <p className="hero-text" style={{ marginBottom: '2.5rem' }}>
           Harness the power of AI to assess your diabetes risk instantly.
           Early detection is the first step towards a healthier life.
         </p>
@@ -42,20 +42,13 @@ const LandingPage = ({ onStart }) => {
           whileTap={{ scale: 0.95 }}
           className="btn-primary"
           onClick={onStart}
-          style={{ padding: '1.2rem 3rem', fontSize: '1.2rem', boxShadow: '0 20px 25px -5px rgba(14, 165, 233, 0.4)' }}
         >
-          Start Assessment <ArrowRight size={20} />
+          Start Assessment <ArrowRight size={22} />
         </motion.button>
       </motion.div>
 
       {/* Features Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '2rem',
-        maxWidth: '1000px',
-        margin: '6rem auto'
-      }}>
+      <div className="features-grid">
         {[
           { icon: Zap, title: "Instant Analysis", desc: "Get results in seconds powered by advanced Random Forest algorithms." },
           { icon: Activity, title: "Precision AI", desc: "Trained on thousands of clinical records for high accuracy." },
@@ -63,29 +56,18 @@ const LandingPage = ({ onStart }) => {
         ].map((feature, idx) => (
           <motion.div
             key={idx}
-            className="glass-card"
-            style={{ padding: '2.5rem', textAlign: 'left' }}
+            className="feature-card"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: idx * 0.2 }}
-            whileHover={{ y: -10 }}
+            whileHover={{ y: -10, boxShadow: '0 10px 30px -5px rgba(0,0,0,0.1)' }}
           >
-            <div style={{
-              background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
-              width: '60px',
-              height: '60px',
-              borderRadius: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '1.5rem',
-              color: '#7c3aed'
-            }}>
-              <feature.icon size={30} />
+            <div className="icon-box" style={{ width: '50px', height: '50px', marginBottom: '1.5rem' }}>
+              <feature.icon size={26} color="#7c3aed" />
             </div>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{feature.title}</h3>
-            <p style={{ fontSize: '1rem', color: '#64748b' }}>{feature.desc}</p>
+            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.75rem', fontWeight: 700 }}>{feature.title}</h3>
+            <p style={{ fontSize: '1rem', color: '#64748b', margin: 0 }}>{feature.desc}</p>
           </motion.div>
         ))}
       </div>

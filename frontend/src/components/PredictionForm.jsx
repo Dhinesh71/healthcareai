@@ -7,17 +7,20 @@ import {
 
 const InputField = ({ label, name, value, onChange, min, max, step, Icon, description }) => (
     <motion.div
-        className="input-group"
+        className="input-card"
         initial={{ y: 20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
     >
-        <div className="input-icon">
-            <Icon size={20} />
+        <div className="input-header">
+            <div className="icon-box">
+                <Icon size={18} color="#7c3aed" />
+            </div>
+            <label className="label-text" htmlFor={name}>{label}</label>
         </div>
-        <div className="input-wrapper">
-            <label className="input-label" htmlFor={name}>{label}</label>
+
+        <div className="input-control">
             <input
                 className="styled-input"
                 type="number"
@@ -29,11 +32,9 @@ const InputField = ({ label, name, value, onChange, min, max, step, Icon, descri
                 max={max}
                 step={step}
                 required
-                placeholder="0"
             />
-            {/* Optional Slider for Interaction */}
             {max && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ marginTop: '1.25rem' }}>
                     <input
                         type="range"
                         min={min}
@@ -42,10 +43,11 @@ const InputField = ({ label, name, value, onChange, min, max, step, Icon, descri
                         value={value}
                         onChange={onChange}
                         name={name}
+                        className="range-slider"
                     />
                 </div>
             )}
-            <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{description}</span>
+            <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.75rem', marginHeight: 0 }}>{description}</p>
         </div>
     </motion.div>
 );
@@ -79,7 +81,6 @@ const PredictionForm = ({ onPredict }) => {
         setError(null);
         try {
             let API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-            // Remove trailing slash if present
             API_URL = API_URL.replace(/\/$/, '');
 
             const response = await fetch(`${API_URL}/predict`, {
@@ -91,7 +92,6 @@ const PredictionForm = ({ onPredict }) => {
             if (!response.ok) throw new Error('Prediction failed');
             const result = await response.json();
 
-            // Artificial delay for better UX (loading state appreciation)
             setTimeout(() => onPredict(result), 800);
         } catch (err) {
             console.error(err);
@@ -102,25 +102,18 @@ const PredictionForm = ({ onPredict }) => {
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
             className="glass-card"
-            style={{ maxWidth: '900px', margin: '2rem auto', padding: '3rem' }}
+            style={{ width: '100%', maxWidth: '1000px' }}
         >
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <div style={{
-                    display: 'inline-flex',
-                    padding: '1rem',
-                    background: '#ede9fe',
-                    borderRadius: '50%',
-                    color: '#8b5cf6',
-                    marginBottom: '1rem'
-                }}>
-                    <Activity size={32} />
+                <div className="icon-box" style={{ width: '40px', height: '40px', display: 'inline-flex', marginBottom: '1.5rem', background: '#f5f3ff' }}>
+                    <Activity size={32} color="#7c3aed" />
                 </div>
-                <h2 style={{ marginBottom: '0.5rem' }}>Patient Assessment Form</h2>
-                <p>Complete the fields below for an accurate risk prediction.</p>
+                <h2 style={{ marginBottom: '0.75rem' }}>Patient Health Profile</h2>
+                <p style={{ maxWidth: '500px', margin: '0 auto', color: '#64748b' }}>Provide the clinical parameters below to generate a real-time risk assessment.</p>
             </div>
 
             {error && (
@@ -128,19 +121,20 @@ const PredictionForm = ({ onPredict }) => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     style={{
-                        background: '#fef2f2',
-                        color: '#ef4444',
-                        padding: '1rem',
-                        borderRadius: '12px',
-                        marginBottom: '2rem',
+                        background: '#fff1f2',
+                        color: '#e11d48',
+                        padding: '1.25rem',
+                        borderRadius: '16px',
+                        marginBottom: '2.5rem',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.75rem',
-                        border: '1px solid #fecaca'
+                        gap: '1rem',
+                        border: '1px solid #ffe4e6',
+                        textAlign: 'left'
                     }}
                 >
-                    <AlertCircle size={20} />
-                    {error}
+                    <AlertCircle size={24} />
+                    <span style={{ fontWeight: 500 }}>{error}</span>
                 </motion.div>
             )}
 
@@ -153,7 +147,7 @@ const PredictionForm = ({ onPredict }) => {
                         onChange={handleChange}
                         min="0" max="20"
                         Icon={Baby}
-                        description="Number of times pregnant"
+                        description="Number of past pregnancies"
                     />
                     <InputField
                         label="Glucose (mg/dL)"
@@ -165,22 +159,22 @@ const PredictionForm = ({ onPredict }) => {
                         description="Plasma glucose concentration"
                     />
                     <InputField
-                        label="Blood Pressure (mm Hg)"
+                        label="Blood Pressure"
                         name="BloodPressure"
                         value={formData.BloodPressure}
                         onChange={handleChange}
                         min="0" max="200"
                         Icon={Heart}
-                        description="Diastolic blood pressure"
+                        description="Diastolic blood pressure (mm Hg)"
                     />
                     <InputField
-                        label="Skin Thickness (mm)"
+                        label="Skin Thickness"
                         name="SkinThickness"
                         value={formData.SkinThickness}
                         onChange={handleChange}
                         min="0" max="100"
                         Icon={User}
-                        description="Triceps skin fold thickness"
+                        description="Triceps skin fold thickness (mm)"
                     />
                     <InputField
                         label="Insulin (mu U/ml)"
@@ -189,53 +183,53 @@ const PredictionForm = ({ onPredict }) => {
                         onChange={handleChange}
                         min="0" max="900"
                         Icon={Microscope}
-                        description="2-Hour serum insulin"
+                        description="2-Hour serum insulin level"
                     />
                     <InputField
-                        label="BMI"
+                        label="Body Mass Index"
                         name="BMI"
                         value={formData.BMI}
                         onChange={handleChange}
                         min="0" max="70" step="0.1"
                         Icon={Scale}
-                        description="Body mass index"
+                        description="Weight to height ratio (kg/m²)"
                     />
                     <InputField
-                        label="Diabetes Pedigree"
+                        label="Genetics Scale"
                         name="DiabetesPedigreeFunction"
                         value={formData.DiabetesPedigreeFunction}
                         onChange={handleChange}
                         min="0" max="3" step="0.01"
                         Icon={Calculator}
-                        description="Diabetes pedigree function"
+                        description="Diabetes pedigree function score"
                     />
                     <InputField
-                        label="Age (years)"
+                        label="Patient Age"
                         name="Age"
                         value={formData.Age}
                         onChange={handleChange}
                         min="0" max="120"
                         Icon={User}
-                        description="Age of the patient"
+                        description="Age of the patient in years"
                     />
                 </div>
 
-                <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                <div style={{ textAlign: 'center', marginTop: '4rem' }}>
                     <motion.button
                         className="btn-primary"
                         type="submit"
                         disabled={loading}
-                        whileHover={!loading ? { scale: 1.05 } : {}}
-                        whileTap={!loading ? { scale: 0.95 } : {}}
-                        style={{ minWidth: '220px' }}
+                        whileHover={!loading ? { scale: 1.02 } : {}}
+                        whileTap={!loading ? { scale: 0.98 } : {}}
+                        style={{ minWidth: '280px', height: '60px' }}
                     >
                         {loading ? (
                             <>
-                                <Loader2 className="animate-spin" size={20} /> Analyzing...
+                                <Loader2 className="animate-spin" size={24} /> Processing Data...
                             </>
                         ) : (
                             <>
-                                Generate Prediction <ArrowRight size={20} />
+                                Run AI Diagnosis <ArrowRight size={22} />
                             </>
                         )}
                     </motion.button>
